@@ -1,0 +1,126 @@
+CREATE DATABASE Empresa;
+
+use Empresa;
+-- Criando e selecioando o DATABASE Empresa.
+
+CREATE TABLE Departamentos (
+    DepartamentoID INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(55) NOT NULL
+);
+-- Criando tabela de departamentos.
+
+CREATE TABLE Funcionarios (
+    FuncionarioID INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(55) NOT NULL,
+    Sobrenome VARCHAR(55) NOT NULL,
+    DepartamentoID INT NOT NULL,
+    Salario DECIMAL(10,2),
+    FOREIGN KEY (DepartamentoID) REFERENCES Departamentos(DepartamentoID)
+);
+-- Criando tabela de funcionários.
+CREATE TABLE Projetos (
+    ProjetoID INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(55) NOT NULL,
+    DepartamentoID INT NOT NULL,
+    FOREIGN KEY (DepartamentoID) REFERENCES Departamentos(DepartamentoID)
+);
+-- Criando tabela de projetos.
+
+INSERT INTO Departamentos (Nome)
+VALUES
+    ('Vendas'),
+    ('Marketing'),
+    ('Recursos Humanos');
+
+
+INSERT INTO Funcionarios (Nome, Sobrenome, DepartamentoID, Salario)
+VALUES
+    ('celso', 'Alves', 1, 3000.00),
+    ('kaike', 'Luan', 2, 3800.00),
+    ('Thiago', 'Soares', 3,4000.00),
+    ('Ramiro', 'Pascoal', 3,4000.00);
+	
+INSERT INTO Projetos (Nome, DepartamentoID)
+VALUES
+    ('Novo Produto', 1),
+    ('Publicidade', 2),
+    ('Treinamento ', 3);
+-- Inserindo dados nas tabelas
+
+CREATE INDEX idx_funcionarios_nome_sobrenome ON Funcionarios (Nome, Sobrenome);
+
+---------------------------------//------------------------------------------//-------------------------------------------//-------------------------------------------------------
+
+SELECT Funcionarios.Nome, Funcionarios.Sobrenome, Departamentos.Nome AS Departamento, Funcionarios.Salario
+FROM Funcionarios
+INNER JOIN Departamentos ON Funcionarios.DepartamentoID = Departamentos.DepartamentoID;
+
+-- Usando INNER JOIN para unir as duas tabelas
+
+SELECT Funcionarios.Nome, Funcionarios.Sobrenome, Departamentos.Nome AS Departamento, Projetos.Nome AS Projeto, Funcionarios.Salario
+FROM Funcionarios
+INNER JOIN Departamentos ON Funcionarios.DepartamentoID = Departamentos.DepartamentoID
+INNER JOIN Projetos ON Departamentos.DepartamentoID = Projetos.DepartamentoID;
+
+-- Usando INNER JOIN para unir as três tabelas
+
+SELECT Departamentos.DepartamentoID, Departamentos.Nome, COUNT(Funcionarios.FuncionarioID) AS NumFuncionarios
+FROM Departamentos
+INNER JOIN Funcionarios ON Departamentos.DepartamentoID = Funcionarios.DepartamentoID
+GROUP BY Departamentos.DepartamentoID, Departamentos.Nome
+HAVING COUNT(Funcionarios.FuncionarioID) >= 2;
+
+-- Usando INNER JOIN com HAVING COUNT para filtrar os grupos que têm pelo menos dois registros.
+
+UPDATE Funcionarios SET Salario = 
+    CASE 
+        WHEN DepartamentoID = 1 THEN Salario + 100 
+        WHEN DepartamentoID = 2 THEN Salario + 200 
+        WHEN DepartamentoID = 3 THEN Salario + 500 
+        ELSE Salario + 0 
+    END;
+-- Usando o UPDATE para aumento De salario
+
+SELECT COUNT(*)
+FROM Funcionarios;
+
+-- Este comando retornará o número total de linhas na tabela Funcionarios.
+
+SELECT COUNT(*)
+FROM Projetos
+WHERE DepartamentoID = 3;
+
+-- Este comando retornará o número total de linhas na tabela Projetos onde o ID do departamento é igual a 3.
+
+SELECT *
+FROM Funcionarios
+ORDER BY Nome;
+
+-- Este comando retornará todas as linhas da tabela Funcionarios, ordenadas pelo nome do funcionário.
+
+SELECT Nome, Sobrenome, Salario
+FROM Funcionarios
+ORDER BY Salario DESC;
+-- Exemplo de ORDER BY DESC:
+
+SELECT DepartamentoID, AVG(Salario)
+FROM Funcionarios
+GROUP BY DepartamentoID;
+-- Este comando retornará o ID de departamento e a média de salários dos funcionários agrupados por departamento.
+
+SELECT FuncionarioID, Nome, Sobrenome, Salario, Salario * 12 AS SalarioAnual
+FROM Funcionarios;
+
+-- Este comando retornará o salário anual de um funcionário.
+
+SELECT Nome as Nome_Departamento
+FROM Departamentos
+UNION
+SELECT Nome as Nome_Funcionario
+FROM Funcionarios;
+
+-- Este comando retornará todos os nomes dos departamentos e funcionários das tabelas Departamentos e Funcionarios, respectivamente, combinados em uma única tabela. Observe que foi necessário renomear as colunas "Nome" para evitar conflitos de nomes de colunas.
+
+
+
+
