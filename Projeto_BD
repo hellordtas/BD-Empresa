@@ -121,6 +121,14 @@ FROM Funcionarios;
 
 -- Este comando retornará todos os nomes dos departamentos e funcionários das tabelas Departamentos e Funcionarios, respectivamente, combinados em uma única tabela. Observe que foi necessário renomear as colunas "Nome" para evitar conflitos de nomes de colunas.
 
+CREATE VIEW FuncionariosDetalhados AS
+SELECT Funcionarios.FuncionarioID, Funcionarios.Nome, Funcionarios.Sobrenome, Departamentos.Nome AS Departamento, Projetos.Nome AS Projeto, Funcionarios.Salario
+FROM Funcionarios
+INNER JOIN Departamentos ON Funcionarios.DepartamentoID = Departamentos.DepartamentoID
+INNER JOIN Projetos ON Departamentos.DepartamentoID = Projetos.DepartamentoID;
 
+--view que combina informações de funcionários, departamentos e projetos
+
+SELECT * FROM FuncionariosDetalhados;
 
 
